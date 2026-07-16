@@ -5,7 +5,7 @@
 This document tracks the development progress and major versions of the project
 
 ---
-### Version 0.1 - Backend foundation and Database Architecture
+## Version 0.1 - Backend foundation and Database Architecture
 The goal was to create the database with all tables and to set up the FastAPI to connect between the future frontend and the database. 
 
 ---
