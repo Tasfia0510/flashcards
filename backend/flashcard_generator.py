@@ -1,4 +1,3 @@
-# pdf text extraction in chunks and use OpenAI to generate the flashcards
 """
 Everything pdf and ai related lived here
 1. extract text out of pdf

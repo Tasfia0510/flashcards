@@ -7,10 +7,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import (
     create_tables,
-    save_deck, 
+    create_deck, 
     get_deck,
-    list_decks,
     reset_database,
+    create_folder,
+    list_folders,
+    delete_folder,
+    list_decks_by_folder,
 )
 from flashcard_generator import generate_flashcards
 
@@ -36,11 +39,12 @@ def home():
         "message": "backend running"
     }
 
-# get all decks
-@app.get("/decks")
-def read_decks():
-    return list_decks()
+@app.delete("/reset")
+def reset():
+    reset_database()
+    return("message:" "database cleared")
 
+# DECKS
 # get one deck
 @app.get("/decks/{deck_id}")
 def read_deck(deck_id:int):
@@ -52,13 +56,17 @@ def read_deck(deck_id:int):
         }
     return deck
 
-# generate a fake deck for testing 
-@app.post("/generate")
-def generate():
+# create a deck inside a folder 
+@app.post("/folders/{folder_id}/decks")
+def create_deck(folder_id:int, name:str):
     text = "Example study notes"
     cards = generate_flashcards(text)
 
-    deck_id = save_deck("Example deck", cards)
+    deck_id = save_deck(
+        folder_id=folder_id,
+        name=name,
+        cards=cards
+    )
 
     return {
         "message": "deck created",
@@ -66,7 +74,28 @@ def generate():
         "cards": cards
     }
 
-@app.delete("/reset")
-def reset():
-    reset_database()
-    return("message:" "database cleared")
+# FOLDERS
+@app.get("/folders")
+def read_folders():
+    return list_folders()
+
+@app.post("/folders")
+def create_new_folder(name: str):
+    folder_id = create_folder(name)
+    return {
+        "message": "folder created",
+        "folder name": name,
+        "folder id": folder_id
+    }
+
+@app.delete("/folders/{folder_id}")
+def remove_folder(folder_id:int):
+    delete_folder(folder_id)
+
+    return {
+        "message": "folder deleted"
+    }
+
+@app.get("/folders/{folder_id}/decks")
+def read_folder_decks(folder_id:int):
+    return list_decks_by_folder(folder_id)

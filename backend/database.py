@@ -69,13 +69,13 @@ def create_tables():
     cursor.close()
     connection.close()
 
-def save_deck(name: str, cards: list[dict]) -> int:
+def create_deck(folder_id: int, name: str, cards: list[dict]):
     # saves a deck, and its cards
     # the cards are a list of {"front:"..., "back:..."}
     connection = connect_database()
     cursor = connection.cursor()
 
-    cursor.execute("INSERT INTO decks (name) VALUES (%s) RETURNING id;", (name,))
+    cursor.execute("INSERT INTO decks (folder_id, name) VALUES (%s, %s) RETURNING id;", (folder_id, name))
     # get deck_ide with fetchone
     deck_id = cursor.fetchone()[0]
 
@@ -97,7 +97,7 @@ def get_deck(deck_id: int) -> dict | None:
 
     # get the deck info
     cursor.execute(
-        "SELECT id, name, created_at FROM decks WHERE id = %s;", (deck_id,)
+        "SELECT id, folder_id, name, created_at FROM decks WHERE id = %s;", (deck_id,)
     )
     deck = cursor.fetchone()
 
@@ -112,26 +112,7 @@ def get_deck(deck_id: int) -> dict | None:
     connection.close()
     return deck
 
-def list_decks():
-    # returns a list of all the decks, returns every deck with how many cards each has
-    connection = connect_database()
-    cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-
-    # inner join only shows where both table match (match in id from cards and deck)
-    # left join will show us every deck
-    cursor.execute("""
-        SELECT d.id, d.name, d.created_at, COUNT(c.id) AS total_cards
-        FROM decks d 
-        LEFT JOIN cards c ON c.deck_id = d.id
-        GROUP BY d.id
-        ORDER BY d.created_at DESC
-    """)
-    decks = cursor.fetchall()
-
-    cursor.close()
-    connection.close()
-    return decks
-
+# for testing: this will remove everything 
 def reset_database():
     connection = connect_database()
     cursor = connection.cursor()
@@ -139,9 +120,68 @@ def reset_database():
     # TRUNCATE deletes all rows at once, while DELETE removes each row individually (faster on larger tables)
     # RESTART IDENTITY CASCADE counts the deck_id from 1, restarts the counter
     cursor.execute(
-        "TRUNCATE decks, cards RESTART IDENTITY CASCADE;"
+        "TRUNCATE folders, decks, cards RESTART IDENTITY CASCADE;"
     )
 
     connection.commit()
     cursor.close()
-    connection.close()  
+    connection.close()
+
+def create_folder(name:str) -> int:
+    connection = connect_database()
+    cursor = connection.cursor()
+
+    cursor.execute("INSERT INTO folders(name) VALUES (%s) RETURNING id;", (name,))
+
+    folder_id = cursor.fetchone()[0]
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+    return folder_id
+
+# get all folders 
+def list_folders():
+    connection = connect_database()
+    cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    cursor.execute("""
+        SELECT id, name, created_at
+        FROM folders
+        ORDER BY created_at DESC;
+    """)
+
+    folders = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    return folders
+
+def delete_folder(folder_id: int):
+    connection = connect_database()
+    cursor = connection.cursor()
+
+    cursor.execute("DELETE FROM folders WHERE id = %s;", (folder_id,))
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+def list_decks_by_folder(folder_id:int):
+    connection = connect_database()
+    cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    cursor.execute("""
+        SELECT id, name, created_at
+        FROM decks
+        WHERE folder_id = %s
+        ORDER BY created_at DESC;
+    """, (folder_id,))  
+       
+    decks = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+    return decks
