@@ -124,6 +124,6 @@ The most important part is to get the backend to read the PDF file. _pymupdf_ is
 
 **Sources for these installations**:
 - https://pypi.org/project/pymupdf4llm/
-- https://onlyoneaman.medium.com
+- https://onlyoneaman.medium.com/i-tested-7-python-pdf-extractors-so-you-dont-have-to-2025-edition-c88013922257
 - https://www.reddit.com/r/LangChain/comments/1e7cntq/whats_the_best_python_library_for_extracting_text/ (also know that this is not the best source but i trust my reddit pals more than anything)
 
