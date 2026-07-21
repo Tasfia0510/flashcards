@@ -3,7 +3,7 @@ Main file for the FastAPI backend
 """
 
 # all important imports
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from database import (
     create_tables,
@@ -99,3 +99,12 @@ def remove_folder(folder_id:int):
 @app.get("/folders/{folder_id}/decks")
 def read_folder_decks(folder_id:int):
     return list_decks_by_folder(folder_id)
+
+# PDF 
+# pdf upload testing - is not saved  
+@app.post("/upload")
+def upload_pdf(file: UploadFile = File(...)):
+    return {
+        "message": "pdf received",
+        "filename": file.filename
+    }
