@@ -87,7 +87,7 @@ The goal was to improve the backend structure by organizing decks inside folders
      - "delete folder" function
 
 - Added folder routes to FastAPI
-     - New route: `POST /folders/{folder_id}/decks instead` of `POST /decks`
+     - New route: `POST /folders/{folder_id}/decks` instead of `POST /decks`
 
 - Added `POST /upload` to upload PDF:s
 
@@ -99,15 +99,15 @@ The goal was to improve the backend structure by organizing decks inside folders
 
 **UPDATED USER FLOW**
 ```
-**POST /folders**: create new folder 
+POST /folders: create new folder 
 ↓
-**POST /folders/{folder_id}/decks**: create a deck inside one folder
+POST /folders/{folder_id}/decks: create a deck inside one folder
 ↓
-**GET /folders**: menu shows all the folders a users has created 
+GET /folders: menu shows all the folders a users has created 
 ↓
-**GET /folders/{folder_id}/decks**: shows us all the decks we have created for that folder (folder_id)
+GET /folders/{folder_id}/decks: shows us all the decks we have created for that folder (folder_id)
 ↓
-**GET /decks/{deck_id}**: shows us all the cards in the specific deck (deck_id)
+GET /decks/{deck_id}: shows us all the cards in the specific deck (deck_id)
 ```
 
 ---
