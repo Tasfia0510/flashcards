@@ -122,8 +122,6 @@ The most important part is to get the backend to read the PDF file. _pymupdf_ is
 <br>
 
 **Sources for these installations**:
-
-<br>
 - https://pypi.org/project/pymupdf4llm/
 <br>
 - https://onlyoneaman.medium.com i-tested-7-python-pdf-extractors-so-you-dont-have-to-2025-edition-c88013922257
