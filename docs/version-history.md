@@ -113,9 +113,6 @@ GET /decks/{deck_id}: shows us all the cards in the specific deck (deck_id)
 ---
 
 **INSTALLATIONS**
-
-<br>
-
 _python-multipart_ was installed because a PDF is a different type of HTTP-request, compared to JSON text. That is why FastAPI needs a library that can unpack the PDF file.
 
 <br>
