@@ -3,3 +3,5 @@ psycopg2-binary==2.9.12
 python-dotenv==1.2.2
 python-multipart==0.0.32
 uvicorn==0.51.0
+pymupdf=1.28.0
+pymupdf4llm==1.28.0
