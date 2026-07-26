@@ -194,13 +194,9 @@ The main challenge was preserving all important information from mathematical PD
 
      However, the solution failed because Pix2Text required `torch==2.4.0`, which was not compatible with my Intel Mac. 
 
-<br>
-
 - **Solution 2 - Pix2Text using Docker (Failed)**
 
      Solution 2 was to use `pix2text` but with Docker. Docker was tested to bypass macOS dependency issues by running Pix2Text inside a Linux environment eradicating the problem with Solution 1. However, the downside was that the model was extremely slow. 
-
-<br>
 
 - **Solution 3: Google Gemini Vision API (Current Solution)**
 
