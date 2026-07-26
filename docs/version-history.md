@@ -184,8 +184,8 @@ The main challenge was preserving all important information from mathematical PD
 ---
 
 ### SOLUTIONS
-**Solution 1 - Pix2Text (Failed)**
-<br>
+- **Solution 1 - Pix2Text (Failed)**
+
 The first solution investigated was Pix2Text because it is an open-source alternative to Mathpix and specifically designed for mathematical document understanding.
 
 The reason it looked promising was that it combined several important components. It had Mathematical Formula Detection (MFD), which identifies formulas inside documents, Mathematical Formula Recognition (MFR), which converts formulas into LaTeX, and a layout model that separates different parts of a document such as text, formulas, tables and images.
@@ -196,14 +196,14 @@ However, the solution failed because Pix2Text required `torch==2.4.0`, which was
 
 <br>
 
-**Solution 2 - Pix2Text using Docker (Failed)**
-<br>
+- **Solution 2 - Pix2Text using Docker (Failed)**
+
 Solution 2 was to use `pix2text` but with Docker. Docker was tested to bypass macOS dependency issues by running Pix2Text inside a Linux environment eradicating the problem with Solution 1. However, the downside was that the model was extremely slow. 
 
 <br>
 
-**Solution 3: Google Gemini Vision API (Current Solution)**
-<br>
+- **Solution 3: Google Gemini Vision API (Current Solution)**
+
 The final solution was to use Gemini's multimodal capabilities instead of combining several separate models.
 
 Instead of extracting text first, each PDF page is converted into an image and sent directly to Gemini. This allows the model to understand the complete page visually, including text, formulas and mathematical notation.
