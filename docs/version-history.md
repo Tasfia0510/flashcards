@@ -140,7 +140,9 @@ Return extracted text
 ```
 
 ### PLANNED PDF PIPELINE
+<img width="665" height="418" alt="Screenshot 2026-07-26 at 15 12 23" src="https://github.com/user-attachments/assets/e3743508-e8e0-4a3e-a5c2-bcb55fe13011" />
 
+---
 
 ## Version 0.3 - AI powered PDF processing and flashcard generation
 The goal was to solve the biggest limitation from Version 0.2: preserving mathematical content when processing PDFs. This is especially important because most of my study material is mathematics, where formulas contain essential information and cannot be treated as normal text.
@@ -211,3 +213,6 @@ The main challenge was preserving all important information from mathematical PD
 ---
 
 ### UPDATED PDF PIPELINE
+<img width="570" height="366" alt="Screenshot 2026-07-26 at 15 56 16" src="https://github.com/user-attachments/assets/8395af9c-bb9c-4f41-92c5-43d9044735dd" />
+
+---
