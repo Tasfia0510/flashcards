@@ -140,7 +140,7 @@ Return extracted text
 ```
 
 ### PLANNED PDF PIPELINE
-<img width="665" height="418" alt="Screenshot 2026-07-26 at 15 12 23" src="https://github.com/user-attachments/assets/e3743508-e8e0-4a3e-a5c2-bcb55fe13011" />
+<img width="545" height="365" alt="Screenshot 2026-07-26 at 15 58 08" src="https://github.com/user-attachments/assets/432f46ed-5cd1-4f9b-8691-d0e883bb19bd" />
 
 ---
 
