@@ -15,7 +15,7 @@ from database import (
     delete_folder,
     list_decks_by_folder,
 )
-from document_processor import extract_pdf_text
+from document_processor import generate_flashcards
 
 # create the FastAPI (backend) application
 app = FastAPI(
@@ -103,9 +103,6 @@ def read_folder_decks(folder_id:int):
 # PDF 
 # pdf upload testing - is not saved  
 @app.post("/upload")
-def upload_pdf(file: UploadFile = File(...)):
-    text = extract_pdf_text(file)
-    return {
-        "filename": file.filename,
-        "content": text
-    }
+def upload_pdf(file: UploadFile = File(...), depth:str = "standard"):
+    cards = generate_flashcards(file, depth)
+    return {"filename": file.filename, "cards": cards}
