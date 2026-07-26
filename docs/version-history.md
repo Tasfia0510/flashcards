@@ -113,7 +113,6 @@ GET /decks/{deck_id}: shows us all the cards in the specific deck (deck_id)
 ---
 
 ### INSTALLATIONS
-<br>
 _python-multipart_ was installed because a PDF is a different type of HTTP-request, compared to JSON text. That is why FastAPI needs a library that can unpack the PDF file.
 
 <br>
@@ -126,6 +125,8 @@ The most important part is to get the backend to read the PDF file. _pymupdf_ is
 - https://pypi.org/project/pymupdf4llm/
 - https://onlyoneaman.medium.com i-tested-7-python-pdf-extractors-so-you-dont-have-to-2025-edition-c88013922257
 - https://www.reddit.com/r/LangChain/comments/1e7cntq/whats_the_best_python_library_for_extracting_text/ (also know that this is not the best source but i trust my reddit pals more than anything)
+
+---
 
 ### THE PDF PIPELINE SO FAR:
 ```
@@ -149,9 +150,9 @@ Most important architectural change was the use of AI in pdf processing. The sys
 ---
 
 ### IMPLEMENTED
-The PDF processing system was redesigned. `pymupdf4llm` was removed because Gemini now handles the understanding and formatting of the document.
+The PDF processing system was redesigned. `pymupdf4llm` was removed because Gemini now handles the understanding and formatting of the document. The backend can now receive a PDF, convert all pages into images, send them to Gemini, and receive structured flashcards in JSON format.
 
-The backend can now receive a PDF, convert all pages into images, send them to Gemini, and receive structured flashcards in JSON format.
+<br>
 
 The prompt was also improved to make sure that:
 - formulas are always written in LaTeX
@@ -159,20 +160,14 @@ The prompt was also improved to make sure that:
 - all concepts are covered
 - unnecessary formatting is ignored
 
-Different generation depths were also added, allowing the user to choose between concise, standard and thorough flashcard generation.
+<br>
 
+- Different generation depths were also added, allowing the user to choose between concise, standard and thorough flashcard generation.
+
+---
 
 ### PROBLEMS IDENTIFIED
-The main challenge was preserving all important information from mathematical PDFs. A PDF is not structured like normal text. Mathematical content can appear as:
-
-- normal text
-- embedded images
-- LaTeX-rendered formulas
-- diagrams and figures
-
-The previous pipeline from Version 2 could not reliably understand the difference between these elements.
-
-Three main issues were identified:
+The main challenge was preserving all important information from mathematical PDFs. A PDF is not structured like normal text. Mathematical content can appear as normal text, embedded images, LaTeX-rendered formulas, diagrams and figures. The previous pipeline from Version 2 could not reliably understand the difference between these elements. Three main issues were identified:
 
 - **Issue 1: Mathematical formulas were represented incorrectly**
 
@@ -190,6 +185,7 @@ Three main issues were identified:
 
 ### SOLUTIONS
 **Solution 1 - Pix2Text (Failed)**
+<br>
 The first solution investigated was Pix2Text because it is an open-source alternative to Mathpix and specifically designed for mathematical document understanding.
 
 The reason it looked promising was that it combined several important components. It had Mathematical Formula Detection (MFD), which identifies formulas inside documents, Mathematical Formula Recognition (MFR), which converts formulas into LaTeX, and a layout model that separates different parts of a document such as text, formulas, tables and images.
@@ -201,11 +197,13 @@ However, the solution failed because Pix2Text required `torch==2.4.0`, which was
 <br>
 
 **Solution 2 - Pix2Text using Docker (Failed)**
+<br>
 Solution 2 was to use `pix2text` but with Docker. Docker was tested to bypass macOS dependency issues by running Pix2Text inside a Linux environment eradicating the problem with Solution 1. However, the downside was that the model was extremely slow. 
 
 <br>
 
 **Solution 3: Google Gemini Vision API (Current Solution)**
+<br>
 The final solution was to use Gemini's multimodal capabilities instead of combining several separate models.
 
 Instead of extracting text first, each PDF page is converted into an image and sent directly to Gemini. This allows the model to understand the complete page visually, including text, formulas and mathematical notation.
