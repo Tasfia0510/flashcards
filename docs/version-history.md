@@ -1,7 +1,6 @@
 # Version History
 
 ### PURPOSE
-<br>
 This document tracks the development and major versions of the project. This is not ment for users, but mostly for me to see my own progress and learning with notes, sources and my own thoughts and research. 
 
 ---
@@ -216,3 +215,31 @@ The main challenge was preserving all important information from mathematical PD
 <img width="570" height="366" alt="Screenshot 2026-07-26 at 15 56 16" src="https://github.com/user-attachments/assets/8395af9c-bb9c-4f41-92c5-43d9044735dd" />
 
 ---
+
+### Version 0.4 - Flashcard review workflow and frontend 
+The goal for this version was to finalize the flashcard workflow. The main workflow has been finalized by implementing folder and deck setup, to reviewing and editing generated cards—along with the homepage menu. Study mode and manual card creation from scratch are still in progress. When it comes to the setup, Next.js, React, Typescript and Tailwind CSS has been set up. 
+
+--- 
+### IMPLEMENTED
+- Configured Next.js, React, TypeScript, and Tailwind CSS. 
+
+- Updated database schema to remove `NOT NULL` constraints on `folder_id`—decks can now exist independently. Folders are not mandatory anymore. 
+
+- Built and designed the main dashboard layout for viewing decks and folders.
+
+- The review step allows editing existing cards, deleting specific cards, and adding new cards to the end of the deck.
+
+- Resolved Gemini API output formatting issues using `demjson3` to prevent response parsing crashes.
+
+- Integrated _KaTeX_ for smooth inline math formulas. Supports inline math and block math. 
+
+     - It always displays the rendered KaTeX math directly on the card. Has seamles editing: click directly on the equation to reveal and edit the raw LaTeX code. Clicking outside the field instantly and it converts the code back into math. Shows a subtle background/border on hover to indicate the field is editable. 
+
+---
+
+### FLASHCARD WORKFLOW BROAD 
+```
+create deck → (SETUP) fill in: name of deck, choose: folder from existing pool or create new → (SOURCE) AI generate or create cards from scratch → (REVIEW) review/edit → (SAVE) save deck
+```
+
+### Version 0.5 - Study mode and improvement
