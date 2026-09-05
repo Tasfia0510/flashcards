@@ -216,7 +216,7 @@ The main challenge was preserving all important information from mathematical PD
 
 ---
 
-### Version 0.4 - Flashcard review workflow and frontend 
+## Version 0.4 - Flashcard review workflow and frontend 
 The goal for this version was to finalize the flashcard workflow. The main workflow has been finalized by implementing folder and deck setup, to reviewing and editing generated cards—along with the homepage menu. Study mode and manual card creation from scratch are still in progress. When it comes to the setup, Next.js, React, Typescript and Tailwind CSS has been set up. 
 
 --- 
@@ -242,4 +242,4 @@ The goal for this version was to finalize the flashcard workflow. The main workf
 create deck → (SETUP) fill in: name of deck, choose: folder from existing pool or create new → (SOURCE) AI generate or create cards from scratch → (REVIEW) review/edit → (SAVE) save deck
 ```
 
-### Version 0.5 - Study mode and improvement
+## Version 0.5 - Study mode and improvements

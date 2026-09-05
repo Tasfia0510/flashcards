@@ -13,6 +13,7 @@ import json
 import pymupdf
 from google import genai
 from google.genai import types
+import demjson3
 
 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 MODEL = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
@@ -20,15 +21,13 @@ MODEL = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
 DEPTH_INSTRUCTIONS = {
     "concise": (
         "Create one flashcard per distinct fact or concept. "
-        "Keep cards focused and few - the minimum needed to cover everything."
+        "Keep cards focused and few - the minimum needed to cover everything." 
+        "Each card should cover a significant, high-level concept."
     ),
     "standard": (
-        "Create one flashcard per distinct fact or concept, including "
-        "minor details, definitions, and vocabularies"
-    ),
-    "thorough": (
-        "Create one flashcard per distinct fact or concept, including "
-        "minor details, definitions, and thorough examples as their own cards. "
+        "Create cards for all important concepts including definitions, formulas, "
+        "and core principles. Group related sub-topics into single cards where possible. "
+        "Skip redundant information and include examples."
     ),
 }
 
@@ -55,8 +54,15 @@ def build_prompt(depth: str) -> str:
         "an image on the page. "
         "Ignore repeated page headers, footers, and page numbers entirely - "
         "do not create cards from them. "
-        "Respond with ONLY a JSON array, no other text. Each item: "
-        '{"front": "question", "back": "answer"}.'
+         "IMPORTANT JSON RULES:\n"
+        "- Respond with ONLY a valid JSON object, no other text.\n"
+        "- The JSON must be in this exact format: {\"cards\": [{\"front\": \"question\", \"back\": \"answer\"}]}\n"
+        "- Use double quotes for all strings.\n"
+        "- NO trailing commas after the last item in arrays or objects.\n"
+        "- Escape special characters: newline as \\n, backslash as \\\\, quotes as \\\".\n"
+        "- Do not wrap the JSON in markdown code blocks.\n"
+        "- Do not add any explanation or text before or after the JSON.\n"
+        "- Ensure all commas between objects and properties are correct.\n"
     )
 
 
@@ -86,7 +92,34 @@ def generate_flashcards(file, depth: str = "standard") -> list[dict]:
 
     raw = response.text.strip()
     raw = raw.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
-    return json.loads(raw)
+    
+    data = demjson3.decode(raw)
+    
+    # Om data är ett objekt med 'cards' som är en dict
+    if isinstance(data, dict) and "cards" in data:
+        cards = data["cards"]
+        # Om cards är en dict, konvertera till lista
+        if isinstance(cards, dict):
+            return list(cards.values())
+        # Om cards är en lista, returnera den
+        elif isinstance(cards, list):
+            return cards
+    
+    # Om data är en dict med numeriska nycklar
+    if isinstance(data, dict):
+        # Kolla om alla nycklar är siffror
+        if all(str(k).isdigit() for k in data.keys()):
+            return list(data.values())
+        # Om data har 'front' och 'back', returnera som enskilt kort
+        if "front" in data and "back" in data:
+            return [data]
+    
+    # Om data är en lista
+    if isinstance(data, list):
+        return data
+    
+    # Fallback
+    return []
 
 """
 # temporary

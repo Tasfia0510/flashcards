@@ -9,11 +9,14 @@ from database import (
     create_tables,
     create_deck, 
     get_deck,
+    delete_deck,
     reset_database,
     create_folder,
     list_folders,
     delete_folder,
+    rename_folder, 
     list_decks_by_folder,
+    update_deck_cards,
 )
 from document_processor import generate_flashcards
 
@@ -44,37 +47,8 @@ def reset():
     reset_database()
     return("message:" "database cleared")
 
-# DECKS
-# get one deck
-@app.get("/decks/{deck_id}")
-def read_deck(deck_id:int):
-    deck = get_deck(deck_id)
-
-    if deck is None:
-        return {
-            "error": "deck not found "
-        }
-    return deck
-
-# create a deck inside a folder 
-@app.post("/folders/{folder_id}/decks")
-def create_deck(folder_id:int, name:str):
-    text = "Example study notes"
-    cards = generate_flashcards(text)
-
-    deck_id = save_deck(
-        folder_id=folder_id,
-        name=name,
-        cards=cards
-    )
-
-    return {
-        "message": "deck created",
-        "deck_id": deck_id, 
-        "cards": cards
-    }
-
 # FOLDERS
+
 @app.get("/folders")
 def read_folders():
     return list_folders()
@@ -91,7 +65,6 @@ def create_new_folder(name: str):
 @app.delete("/folders/{folder_id}")
 def remove_folder(folder_id:int):
     delete_folder(folder_id)
-
     return {
         "message": "folder deleted"
     }
@@ -100,9 +73,42 @@ def remove_folder(folder_id:int):
 def read_folder_decks(folder_id:int):
     return list_decks_by_folder(folder_id)
 
-# PDF 
-# pdf upload testing - is not saved  
-@app.post("/upload")
-def upload_pdf(file: UploadFile = File(...), depth:str = "standard"):
+# DECKS
+
+# get one deck
+@app.get("/decks/{deck_id}")
+def read_deck(deck_id: int):
+    deck = get_deck(deck_id)
+
+    if deck is None:
+        return {
+            "error": "deck not found "
+        }
+    return deck
+
+@app.delete("/decks/{deck_id}")
+def remove_deck(deck_id: int):
+    delete_deck(deck_id)
+    return {"message": "deck deleted"}
+
+# DOCUMENT --> FLASHCARDS --> SAVE
+
+@app.post("/generate")
+def generate(name: str, depth: str = "standard", folder_id: int | None = None, file: UploadFile = File(...)):
     cards = generate_flashcards(file, depth)
-    return {"filename": file.filename, "cards": cards}
+    return {"cards": cards}
+
+@app.post("/decks")
+def save_deck_route(name: str, cards: list[dict], folder_id: int | None = None):
+    deck_id = create_deck(name=name, cards=cards, folder_id=folder_id)
+    return {"message": "deck created", "deck_id": deck_id}
+
+@app.patch("/folders/{folder_id}")
+def rename_folder_route(folder_id: int, name: str):
+    rename_folder(folder_id, name)
+    return {"message": "folder renamed"}
+
+@app.put("/decks/{deck_id}/cards")
+def update_deck_cards_route(deck_id: int, cards: list[dict]):
+    update_deck_cards(deck_id, cards)
+    return {"message": "deck updated"}

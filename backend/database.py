@@ -48,7 +48,7 @@ def create_tables():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS decks (
             id SERIAL PRIMARY KEY,
-            folder_id INTEGER NOT NULL,
+            folder_id INTEGER,
             name TEXT NOT NULL,
             created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
             CONSTRAINT fk_decks_folder_id FOREIGN KEY(folder_id) REFERENCES folders(id) ON DELETE CASCADE
@@ -69,7 +69,7 @@ def create_tables():
     cursor.close()
     connection.close()
 
-def create_deck(folder_id: int, name: str, cards: list[dict]):
+def create_deck(name: str, cards: list[dict], folder_id: int | None = None):
     # saves a deck, and its cards
     # the cards are a list of {"front:"..., "back:..."}
     connection = connect_database()
@@ -111,6 +111,16 @@ def get_deck(deck_id: int) -> dict | None:
     cursor.close()
     connection.close()
     return deck
+
+def delete_deck(deck_id: int):
+    connection = connect_database()
+    cursor = connection.cursor()
+
+    cursor.execute("DELETE FROM decks WHERE id = %s", (deck_id,))  
+
+    connection.commit()
+    cursor.close()
+    connection.close()
 
 # for testing: this will remove everything 
 def reset_database():
@@ -169,6 +179,16 @@ def delete_folder(folder_id: int):
     cursor.close()
     connection.close()
 
+def rename_folder(folder_id: int, name: str):
+    connection = connect_database()
+    cursor = connection.cursor()
+
+    cursor.execute("UPDATE folders SET name = %s WHERE id = %s;", (name, folder_id))
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+
 def list_decks_by_folder(folder_id:int):
     connection = connect_database()
     cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -185,3 +205,19 @@ def list_decks_by_folder(folder_id:int):
     cursor.close()
     connection.close()
     return decks
+
+def update_deck_cards(deck_id: int, cards: list[dict]):
+    connection = connect_database()
+    cursor = connection.cursor()
+
+    cursor.execute("DELETE FROM cards WHERE deck_id = %s;", (deck_id,))
+
+    for card in cards:
+        cursor.execute(
+            "INSERT INTO cards (deck_id, front, back) VALUES (%s, %s, %s)",
+            (deck_id, card["front"], card["back"]),
+        )
+
+    connection.commit()
+    cursor.close()
+    connection.close()
