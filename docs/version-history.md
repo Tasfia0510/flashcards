@@ -242,4 +242,4 @@ The goal for this version was to finalize the flashcard workflow. The main workf
 create deck → (SETUP) fill in: name of deck, choose: folder from existing pool or create new → (SOURCE) AI generate or create cards from scratch → (REVIEW) review/edit → (SAVE) save deck
 ```
 
-## Version 0.5 - Study mode and improvement
+## Version 0.5 - Study mode and improvements
